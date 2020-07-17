@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  h1 {
+    color: #fff;
+    letter-spacing: 1.5px;
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    color: #fff;
+    letter-spacing: 1px;
+    font-size: 2rem;
+  }
+
+  .nameWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 2rem;
+    width: 100%;
+
+    button {
+      margin-top: 2rem;
+    }
+  }
+
+  .registerButton {
+    background-color: black !important;
+  }
+}

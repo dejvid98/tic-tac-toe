@@ -1,0 +1,14 @@
+.container {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.4rem 0rem;
+  background-color: #ea5455;
+
+  img {
+    height: 4rem;
+  }
+}

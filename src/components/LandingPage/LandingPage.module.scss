@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  background-color: #2d4059;
+  min-height: 100vh;
+
+  .registrationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+}
