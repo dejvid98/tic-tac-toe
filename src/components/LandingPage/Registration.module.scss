@@ -22,14 +22,51 @@
     align-items: center;
     flex-direction: column;
     margin-top: 2rem;
-    width: 100%;
-
+    width: 20rem;
     button {
       margin-top: 2rem;
     }
   }
 
-  .registerButton {
-    background-color: black !important;
+  .alert {
+    margin-bottom: 1rem;
+    padding: 0.6rem 2rem;
+    border-radius: 10px;
+    text-align: center;
+    background-color: #f14668;
+    color: #fff;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    width: 100%;
+    animation: moveInFromBottom ease 0.6s;
+  }
+
+  @keyframes moveInFromBottom {
+    0% {
+      opacity: 0;
+      transform: translateX(5rem);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateX(0rem);
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .container {
+    h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+    }
+    width: 80%;
+
+    .nameWrapper {
+      width: 20rem;
+    }
   }
 }

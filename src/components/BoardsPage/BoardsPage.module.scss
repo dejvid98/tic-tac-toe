@@ -1,0 +1,34 @@
+.container {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  background-color: #2d4059;
+  min-height: 100vh;
+
+  .innerContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 8rem;
+    width: 100%;
+    min-height: 100vh;
+    color: #fff;
+
+    .buttonWrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .icon {
+        height: 30rem !important;
+        font-size: 30rem !important;
+      }
+
+      :first-child {
+        margin-right: 2rem;
+      }
+    }
+  }
+}
+

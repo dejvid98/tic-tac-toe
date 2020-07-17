@@ -1,31 +1,57 @@
 // Libraries imports
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+
 // Relative imports
 import styles from './Registration.module.scss';
 import store from '../../store/store';
 import { addKey, addName } from '../../store/userInfo';
+import HTTPRequest from '../../Util/HTTPRequest';
 
 const Registration = () => {
   const [name, setName] = useState('');
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
+  const [inputClass, setInputClass] = useState('input');
+  const history = useHistory();
 
   const registerUser = async () => {
+    // Checks to see if name input is empty
     if (name.length > 2) {
-      const apiKeyResponse = await axios.post(
-        'http://178.128.206.150:7000/register_candidate'
-      );
+      // Sends a request for the user API key
+      const apiResp = await HTTPRequest.post('/register_candidate');
 
-      const apikey = apiKeyResponse.data.apikey;
+      const apikey = apiResp.data.apikey;
 
-      await axios.post('http://178.128.206.150:7000/player', {
+      // Sends a request to register the user with given the API key
+      const registrationResp = await HTTPRequest.post('/player', {
         apikey,
         name,
       });
 
+      // Checks to see if the status code was 200 (successful)
+      if (apiResp.status !== 200 || registrationResp.status !== 200) {
+        setError('Connection with the server was unsuccessful');
+        setTimeout(() => {
+          setError('');
+        }, 3000);
+        return;
+      }
+
+      // Saves the API key and user name in the store
       store.dispatch(addKey({ apikey }));
       store.dispatch(addName({ name }));
+
+      // Redirects user to boards page
+      history.push('/boards');
     } else {
+      // Displays an error for invalid name input
+      // and removes it after 3 seconds
+      setError('Please enter a valid name');
+      setInputClass('input is-danger');
+      setTimeout(() => {
+        setError('');
+        setInputClass('input');
+      }, 3000);
     }
   };
 
@@ -34,14 +60,19 @@ const Registration = () => {
       <h1>Welcome!</h1>
       <h2>Please enter your name</h2>
       <div className={styles.nameWrapper}>
+        {error ? (
+          <div className={styles.alert}>
+            <p>{error}</p>
+          </div>
+        ) : null}
         <input
-          className="input"
+          className={inputClass}
           type="text"
           placeholder="Name"
           onChange={(e) => setName(e.target.value)}
         />
-        <button className="button is-danger" onClick={registerUser}>
-          REGISTER
+        <button className="button is-success is-rounded" onClick={registerUser}>
+          Register
         </button>
       </div>
     </div>
