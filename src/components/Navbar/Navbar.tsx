@@ -1,10 +1,14 @@
 import React from 'react';
 import styles from './Navbar.module.scss';
 
-const Navbar = () => {
+interface Props {
+  imgLink: string;
+}
+
+const Navbar = ({ imgLink }: Props) => {
   return (
     <div className={styles.container}>
-      <img src="Logo.svg" alt="Tic-tac-toe logo" />
+      <img src={imgLink} alt="Tic-tac-toe logo" />
     </div>
   );
 };

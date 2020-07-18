@@ -1,5 +1,6 @@
 // Libraries imports
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 // Relative imports
 import styles from './BoardsList.module.scss';
@@ -27,6 +28,10 @@ const BoardsPage = () => {
   const [userId, setUserId] = useState('');
   const [alert, setAlert] = useState('');
   const [boardsNum, setBoardsNum] = useState(0);
+  const [joinId, setJoinId] = useState('');
+  const [isJoining, setIsJoining] = useState(false);
+
+  const history = useHistory();
 
   const createBoard = async () => {
     try {
@@ -38,6 +43,10 @@ const BoardsPage = () => {
       setAlert(error.message);
       setTimeout(() => setAlert(''), 3000);
     }
+  };
+
+  const handleJoin = () => {
+    if (joinId.length > 26) history.push(`/game/${userId}/${joinId}`);
   };
 
   useEffect(() => {
@@ -64,17 +73,44 @@ const BoardsPage = () => {
   }, [apikey, boardsNum]);
   return (
     <div className={styles.container}>
-      <Navbar />
+      <Navbar imgLink="/Logo.svg" />
       <div className={styles.innerContainer}>
         <div className={styles.noteWrapper}>
-          <p>Note : You can click on game's ID to copy it to clipboard!</p>
+          <p>
+            Note : You can click on a game's ID to copy it to the clipboard!
+          </p>
         </div>
         <div className={styles.buttonWrapper}>
           <button className="button is-danger is-rounded" onClick={createBoard}>
             Create Board
           </button>
-          <button className="button is-link is-rounded">Join Game</button>
+          <button
+            className="button is-link is-rounded"
+            onClick={() => setIsJoining(!isJoining)}
+          >
+            Join Game
+          </button>
         </div>
+
+        {isJoining ? (
+          <div className={styles.inputWrapper}>
+            <input
+              className="input is-info"
+              type="text"
+              placeholder="Game ID"
+              value={joinId}
+              onChange={(e) => {
+                setJoinId(e.target.value);
+              }}
+            ></input>
+            <button
+              className="button is-primary is-rounded is-outlined"
+              onClick={handleJoin}
+            >
+              Enter
+            </button>
+          </div>
+        ) : null}
 
         {alert ? (
           <div className={styles.alertWrapper}>

@@ -5,12 +5,14 @@ import React from 'react';
 import styles from './BoardField.module.scss';
 
 interface Props {
+  id: number;
   mark: number;
+  markField(fieldId: number): void;
 }
 
-const BoardField = ({ mark }: Props) => {
+const BoardField = ({ id, mark, markField }: Props) => {
   return (
-    <div className={styles.container}>
+    <div className={styles.container} onClick={() => markField(id)}>
       <p>{mark === 1 ? 'X' : null}</p>
       <p>{mark === 2 ? 'O' : null}</p>
     </div>

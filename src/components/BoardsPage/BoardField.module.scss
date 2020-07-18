@@ -1,10 +1,17 @@
 .container {
-  border-bottom: 1px solid #fff;
-  border-right: 1px solid #fff;
+  border-bottom: 6px solid #fff;
+  border-right: 6px solid #fff;
+  transition: all 0.2s ease;
+  cursor: pointer;
 
   p {
     font-size: 3rem;
-    padding: 1rem 2rem;
+    padding: 0.5rem 2rem;
     color: #fff;
+    transition: all 0.2s ease;
+  }
+
+  &:hover {
+    background-color: #f4b400;
   }
 }

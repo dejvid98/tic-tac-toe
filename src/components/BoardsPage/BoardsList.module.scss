@@ -70,6 +70,30 @@
       animation: moveInFromLeft ease 0.8s;
     }
 
+    .inputWrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin-top: 2rem;
+      width: 17rem;
+      animation: fadeIn ease 0.5s;
+
+      :nth-child(2) {
+        margin-top: 1rem;
+      }
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
     @keyframes moveInFromLeft {
       0% {
         opacity: 0;

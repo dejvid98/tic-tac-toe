@@ -10,7 +10,7 @@ const LandingPage = () => {
   return (
     <div className={styles.container}>
       <header>
-        <Navbar />
+        <Navbar imgLink="/Logo.svg" />
       </header>
       <main className={styles.registrationContainer}>
         <Registration />
