@@ -4,7 +4,7 @@ import copy from 'copy-to-clipboard';
 import { Link } from 'react-router-dom';
 
 // Relative imports
-import styles from './Board.module.scss';
+import styles from './ListItemCard.module.scss';
 
 interface Props {
   id: string;

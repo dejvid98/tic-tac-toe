@@ -4,7 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 
 // Relative imports
 import LandingPage from './components/LandingPage/LandingPage';
-import BoardsPage from './components/BoardsPage/BoardsPage';
+import BoardsPage from './components/BoardsPage/BoardsList';
 import Game from './components/BoardsPage/Game';
 
 function App() {

@@ -42,7 +42,7 @@
         p {
           text-align: center;
           letter-spacing: 1px;
-          color: #777;
+          color: rgb(155, 155, 155);
           font-size: 1.5rem;
           margin-top: 4rem;
         }
@@ -54,6 +54,9 @@
       justify-content: center;
       margin-bottom: 2.5rem;
       width: 80%;
+      p {
+        font-weight: bold;
+      }
     }
 
     .alertWrapper {

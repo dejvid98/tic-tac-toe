@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from 'react';
 
 // Relative imports
-import styles from './BoardsPage.module.scss';
+import styles from './BoardsList.module.scss';
 import Navbar from '../Navbar/Navbar';
 import store from '../../store/store';
 import HTTP from '../../Util/HTTPRequest';
-import Board from './BoardCard';
+import Board from './ListItemCard';
 
 interface Store {
   userInfo: {
@@ -70,10 +70,7 @@ const BoardsPage = () => {
           <p>Note : You can click on game's ID to copy it to clipboard!</p>
         </div>
         <div className={styles.buttonWrapper}>
-          <button
-            className="button is-success is-rounded"
-            onClick={createBoard}
-          >
+          <button className="button is-danger is-rounded" onClick={createBoard}>
             Create Board
           </button>
           <button className="button is-link is-rounded">Join Game</button>

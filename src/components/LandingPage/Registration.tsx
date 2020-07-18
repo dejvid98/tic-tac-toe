@@ -28,7 +28,7 @@ const Registration = () => {
         name,
       });
 
-      const {id} = registrationResp.data;
+      const { id } = registrationResp.data;
 
       // Checks to see if the status code was 200 (successful)
       if (apiResp.status !== 200 || registrationResp.status !== 200) {
@@ -68,13 +68,13 @@ const Registration = () => {
           </div>
         ) : null}
         <input
-          className={inputClass}
+          className="input"
           type="text"
           placeholder="Name"
           onChange={(e) => setName(e.target.value)}
         />
-        <button className="button is-success is-rounded" onClick={registerUser}>
-          Register
+        <button className="button is-danger is-rounded" onClick={registerUser}>
+          Continue
         </button>
       </div>
     </div>

@@ -6,6 +6,8 @@ import { useHistory } from 'react-router-dom';
 
 // Relative imports
 import styles from './Game.module.scss';
+import Board from './Board';
+import Navbar from '../Navbar/Navbar';
 
 const Game = () => {
   const { id, roomId } = useParams();
@@ -22,7 +24,8 @@ const Game = () => {
   }, []);
   return (
     <div className={styles.container}>
-      <h1></h1>
+      <Navbar />
+      <Board />
     </div>
   );
 };

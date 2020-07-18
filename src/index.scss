@@ -12,3 +12,11 @@ code {
     monospace;
 }
 @import '../node_modules/bulma/bulma.sass';
+
+.is-link {
+  background-color: #f07b3f !important;
+}
+
+.is-danger {
+  background-color: #ea5455 !important;
+}
