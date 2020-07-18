@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 // Relative imports
 import styles from './Registration.module.scss';
 import store from '../../store/store';
-import { addKey, addName } from '../../store/userInfo';
+import { addKey, addInfo } from '../../store/userInfo';
 import HTTPRequest from '../../Util/HTTPRequest';
 
 const Registration = () => {
@@ -28,6 +28,8 @@ const Registration = () => {
         name,
       });
 
+      const {id} = registrationResp.data;
+
       // Checks to see if the status code was 200 (successful)
       if (apiResp.status !== 200 || registrationResp.status !== 200) {
         setError('Connection with the server was unsuccessful');
@@ -37,9 +39,9 @@ const Registration = () => {
         return;
       }
 
-      // Saves the API key and user name in the store
+      // Saves the API key and user info in the store
       store.dispatch(addKey({ apikey }));
-      store.dispatch(addName({ name }));
+      store.dispatch(addInfo({ name, id }));
 
       // Redirects user to boards page
       history.push('/boards');

@@ -12,6 +12,7 @@ interface Store {
   userInfo: {
     apikey: string;
     name: string;
+    id: string;
   };
 }
 
@@ -23,6 +24,7 @@ interface Board {
 const BoardsPage = () => {
   const [apikey, setApikey] = useState('');
   const [boards, setBoards] = useState<Board[]>([]);
+  const [userId, setUserId] = useState('');
   const [alert, setAlert] = useState('');
   const [boardsNum, setBoardsNum] = useState(0);
 
@@ -41,8 +43,9 @@ const BoardsPage = () => {
   useEffect(() => {
     // Retrieves user info from the store
     const storeState: Store = store.getState();
-    const { apikey } = storeState.userInfo;
+    const { apikey, id } = storeState.userInfo;
     setApikey(apikey);
+    setUserId(id);
   }, []);
 
   useEffect(() => {
@@ -85,7 +88,12 @@ const BoardsPage = () => {
         <div className={styles.boardsWrapper}>
           {boards.length > 0 ? (
             boards.map((board) => (
-              <Board id={board.id} players={board.players} key={board.id} />
+              <Board
+                id={board.id}
+                players={board.players}
+                key={board.id}
+                userId={userId}
+              />
             ))
           ) : (
             <span className={styles.noBoardsAlert}>
