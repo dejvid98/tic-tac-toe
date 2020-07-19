@@ -1,5 +1,5 @@
 // Libraries imports
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import io from 'socket.io-client';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
@@ -8,9 +8,12 @@ import { useHistory } from 'react-router-dom';
 import styles from './Game.module.scss';
 import Board from './Board';
 import NavBar from '../Navbar/Navbar';
+import Scoreboard from './ScoreBoard';
 import Logo from './Logo.svg';
 import { updateMatrix, resetMatrix } from '../../store/matrix';
+import { updateInfo, updateScore } from '../../store/gameInfo';
 import store from '../../store/store';
+import initalMatrix from '../../Util/initialMatrix';
 
 interface Matrix {
   0: number;
@@ -36,10 +39,6 @@ interface SocketResponse {
 
 const Game = () => {
   const { id, roomId } = useParams();
-  const [alert, setAlert] = useState('');
-  const [playerNumber, setPlayerNumber] = useState(0);
-  const [opponent, setOpponent] = useState('');
-  const [isWaiting, setIsWaiting] = useState(true);
   const history = useHistory();
 
   const socket = io.connect(`http://178.128.206.150:7000/?id=${id}`, {
@@ -47,23 +46,12 @@ const Game = () => {
   });
 
   const markField = (field: number) => {
-    socket.emit('mark_tile', roomId, field, (responseCode: number) => {
-      if (responseCode !== 200) {
-        setAlert('Invalid tile');
-        setTimeout(() => setAlert(''), 3000);
-      }
-    });
-  };
-  const restartGame = () => {
-    socket.emit('restart', roomId, (responseCode: number) => {
-      if (responseCode === 200) {
-        setAlert('Game restarted');
-        setTimeout(() => setAlert(''), 3000);
-      }
-    });
+    socket.emit('mark_tile', roomId, field);
   };
 
   useEffect(() => {
+    const restartGame = () => socket.emit('restart', roomId);
+
     const joinRoom = () => {
       socket.emit('join_room', roomId, (responseCode: number) => {
         if (responseCode !== 200) history.push('/');
@@ -76,32 +64,104 @@ const Game = () => {
       });
     };
 
-    const listenForNewPlayers = () => {
-      socket.on('joined', (response: SocketResponse) => {});
+    const listenForTie = () => {
+      socket.on('tie', () => {
+        restartGame();
+        store.dispatch(resetMatrix({ matrix: initalMatrix }));
+      });
     };
-    joinRoom();
 
-    listenForMoves();
+    const listenForWin = () => [
+      socket.on('win', (resposne: SocketResponse) => {
+        const storeInfo = store.getState();
+        const { userInfo, gameInfo } = storeInfo;
+        const { playerNumber, score } = gameInfo;
+
+        if (resposne.player.name === userInfo.name) {
+          if (playerNumber === 1) {
+            store.dispatch(
+              updateScore({
+                score: {
+                  player1: score.player1 + 1,
+                  player2: score.player2,
+                },
+              })
+            );
+          } else {
+            store.dispatch(
+              updateScore({
+                score: {
+                  player1: score.player1,
+                  player2: score.player2 + 1,
+                },
+              })
+            );
+          }
+        } else {
+          if (playerNumber === 1) {
+            store.dispatch(
+              updateScore({
+                score: {
+                  player1: score.player1,
+                  player2: score.player2 + 1,
+                },
+              })
+            );
+          } else {
+            store.dispatch(
+              updateScore({
+                score: {
+                  player1: score.player1 + 1,
+                  player2: score.player2,
+                },
+              })
+            );
+          }
+        }
+        restartGame();
+        store.dispatch(resetMatrix({ matrix: initalMatrix }));
+      }),
+    ];
+
+    const listenForNewPlayers = () => {
+      socket.on('joined', (response: SocketResponse) => {
+        const storeInfo = store.getState();
+        const { name } = storeInfo.userInfo;
+        // Checks to see if recently joined player is different person
+        // if true, sets the info about the game
+        if (response.player.name !== name) {
+          const playerNumber = response.seat === 1 ? 2 : 1;
+          const opponentName = response.player.name;
+          store.dispatch(
+            updateInfo({ name, playerNumber, opponentName, isWaiting: false })
+          );
+        } else {
+          const playerNumber = response.seat;
+          const isWaiting = playerNumber === 1 ? true : false;
+          store.dispatch(
+            updateInfo({
+              name,
+              playerNumber,
+              opponentName: 'Opponent',
+              isWaiting,
+            })
+          );
+        }
+      });
+    };
 
     listenForNewPlayers();
-  }, []);
+    joinRoom();
+    listenForMoves();
+    listenForWin();
+    listenForTie();
+  }, [history, roomId, socket]);
   return (
     <div className={styles.container}>
       <NavBar imgLink={Logo} />
       <div className={styles.innerContainer}>
-        {isWaiting ? (
-          <div className={styles.waitingAlert}>
-            <p>Waiting for opponent...</p>
-          </div>
-        ) : null}
-
+        <Scoreboard />
         <Board markField={markField} />
-
-        {alert ? (
-          <div className={styles.alertWrapper}>
-            <p>{alert}</p>
-          </div>
-        ) : null}
       </div>
     </div>
   );

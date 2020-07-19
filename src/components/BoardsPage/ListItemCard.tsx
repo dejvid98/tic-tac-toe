@@ -12,9 +12,7 @@ interface Props {
   userId: string;
 }
 
-const copyIdToClipboard = (id: string) => {
-  copy(id);
-};
+const copyIdToClipboard = (id: string) => copy(id);
 
 const Board = ({ id, players, userId }: Props) => {
   return (
@@ -24,6 +22,7 @@ const Board = ({ id, players, userId }: Props) => {
         {id} <i className="fas fa-copy"></i>
       </span>
       <p>Players {players}/2</p>
+      
       <Link to={`/game/${userId}/${id}`}>
         <button className="button is-warning is-rounded is-outlined">
           Join

@@ -24,28 +24,10 @@
       animation: moveInFromLeft ease 0.8s;
     }
 
-    .waitingAlert {
-      animation: blinking 2.5s ease-in infinite;
-      margin-bottom: 3rem;
-      color: #fff;
-      font-size: 1.2rem;
-      letter-spacing: 1px;
-    }
+   
   }
 }
 
-@keyframes blinking {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-  }
-}
 
 @keyframes moveInFromLeft {
   0% {

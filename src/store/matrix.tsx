@@ -9,7 +9,7 @@ const slice = createSlice({
       return { ...action.payload.matrix };
     },
     resetMatrix(state, action) {
-      return { ...initalMatrix };
+      return { ...action.payload.matrix };
     },
   },
 });
