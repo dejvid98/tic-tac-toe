@@ -2,7 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const slice = createSlice({
   name: 'userInfo',
-  initialState: { apikey: '', name: '', id: '' },
+  initialState: {
+    apikey: '',
+    name: '',
+    id: '',
+  },
   reducers: {
     addKey(state, action) {
       return { ...state, apikey: action.payload.apikey };

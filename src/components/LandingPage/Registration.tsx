@@ -11,7 +11,6 @@ import HTTPRequest from '../../Util/HTTPRequest';
 const Registration = () => {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
-  const [inputClass, setInputClass] = useState('input');
   const history = useHistory();
 
   const registerUser = async () => {
@@ -49,10 +48,8 @@ const Registration = () => {
       // Displays an error for invalid name input
       // and removes it after 3 seconds
       setError('Please enter a valid name');
-      setInputClass('input is-danger');
       setTimeout(() => {
         setError('');
-        setInputClass('input');
       }, 3000);
     }
   };

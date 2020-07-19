@@ -3,10 +3,14 @@
   border-right: 6px solid #fff;
   transition: all 0.2s ease;
   cursor: pointer;
+  height: 5rem;
+  width: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   p {
     font-size: 3rem;
-    padding: 0.5rem 2rem;
     color: #fff;
     transition: all 0.2s ease;
   }
