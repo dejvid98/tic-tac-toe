@@ -49,21 +49,64 @@ const Game = () => {
     socket.emit('mark_tile', roomId, field);
   };
 
-  useEffect(() => {
-    const restartGame = () => socket.emit('restart', roomId);
+  const leaveSeat = () => {
+    socket.emit('leave_seat', roomId, (respCode: number) => {
+      if (respCode === 200) {
+        console.log('Successfully left the seat');
+        store.dispatch(updateScore({ score: { player1: 0, player2: 0 } }));
+        store.dispatch(updateMatrix({ matrix: initalMatrix }));
+        store.dispatch(
+          updateInfo({
+            isWaiting: true,
+            playerNumber: 0,
+            opponentName: 'Opponent',
+          })
+        );
+      }
+    });
+  };
 
+  const leaveRoom = () => {
+    leaveSeat();
+    socket.emit('leave_room', roomId, (respCode: number) => {
+      if (respCode === 200) {
+        console.log('Successfully left the room');
+        store.dispatch(updateScore({ score: { player1: 0, player2: 0 } }));
+        store.dispatch(updateMatrix({ matrix: initalMatrix }));
+        store.dispatch(
+          updateInfo({
+            isWaiting: true,
+            playerNumber: 0,
+            opponentName: 'Opponent',
+          })
+        );
+        history.push('/boards');
+      }
+    });
+  };
+  useEffect(() => {
+    const restartGame = () =>
+      socket.emit('restart', roomId, (respCode: number) => {
+        if (respCode === 200) console.log('Successfully restarted the game');
+      });
+
+    // Sends a request to join a room, if the response status is false
+    // then it redirects the user to the boards list page
     const joinRoom = () => {
       socket.emit('join_room', roomId, (responseCode: number) => {
-        if (responseCode !== 200) history.push('/');
+        if (responseCode !== 200) history.push('/boards');
       });
     };
 
+    // Listens for when the player makes a move and updates the store state accordingly
     const listenForMoves = () => {
       socket.on('marked', (response: SocketResponse) => {
         store.dispatch(updateMatrix({ matrix: response.matrix }));
       });
     };
 
+    // Listens for a tie in game, when that event occurs
+    // it resets the game and sets initial value to the matrix
     const listenForTie = () => {
       socket.on('tie', () => {
         restartGame();
@@ -71,53 +114,58 @@ const Game = () => {
       });
     };
 
+    // Listens for an event when player wins, restarts the game and matrix
+    // and updates the gamescore accordingly
     const listenForWin = () => [
       socket.on('win', (resposne: SocketResponse) => {
         const storeInfo = store.getState();
         const { userInfo, gameInfo } = storeInfo;
         const { playerNumber, score } = gameInfo;
 
-        if (resposne.player.name === userInfo.name) {
-          if (playerNumber === 1) {
-            store.dispatch(
-              updateScore({
-                score: {
-                  player1: score.player1 + 1,
-                  player2: score.player2,
-                },
-              })
-            );
-          } else {
-            store.dispatch(
-              updateScore({
-                score: {
-                  player1: score.player1,
-                  player2: score.player2 + 1,
-                },
-              })
-            );
-          }
+        if (resposne.player.name === userInfo.name && playerNumber === 1) {
+          store.dispatch(
+            updateScore({
+              score: {
+                player1: score.player1 + 1,
+                player2: score.player2,
+              },
+            })
+          );
+        } else if (
+          resposne.player.name === userInfo.name &&
+          playerNumber === 2
+        ) {
+          store.dispatch(
+            updateScore({
+              score: {
+                player1: score.player1,
+                player2: score.player2 + 1,
+              },
+            })
+          );
+        } else if (
+          resposne.player.name !== userInfo.name &&
+          playerNumber === 1
+        ) {
+          store.dispatch(
+            updateScore({
+              score: {
+                player1: score.player1,
+                player2: score.player2 + 1,
+              },
+            })
+          );
         } else {
-          if (playerNumber === 1) {
-            store.dispatch(
-              updateScore({
-                score: {
-                  player1: score.player1,
-                  player2: score.player2 + 1,
-                },
-              })
-            );
-          } else {
-            store.dispatch(
-              updateScore({
-                score: {
-                  player1: score.player1 + 1,
-                  player2: score.player2,
-                },
-              })
-            );
-          }
+          store.dispatch(
+            updateScore({
+              score: {
+                player1: score.player1 + 1,
+                player2: score.player2,
+              },
+            })
+          );
         }
+
         restartGame();
         store.dispatch(resetMatrix({ matrix: initalMatrix }));
       }),
@@ -132,12 +180,19 @@ const Game = () => {
         if (response.player.name !== name) {
           const playerNumber = response.seat === 1 ? 2 : 1;
           const opponentName = response.player.name;
+
           store.dispatch(
-            updateInfo({ name, playerNumber, opponentName, isWaiting: false })
+            updateInfo({
+              name,
+              playerNumber,
+              opponentName,
+              isWaiting: false,
+            })
           );
         } else {
           const playerNumber = response.seat;
           const isWaiting = playerNumber === 1 ? true : false;
+
           store.dispatch(
             updateInfo({
               name,
@@ -162,6 +217,17 @@ const Game = () => {
       <div className={styles.innerContainer}>
         <Scoreboard />
         <Board markField={markField} />
+        <div className={styles.exitButtonsWrapper}>
+          <button
+            className="button is-warning is-rounded is-outlined"
+            onClick={leaveSeat}
+          >
+            Leave seat
+          </button>
+          <button className="button is-danger is-rounded" onClick={leaveRoom}>
+            Leave room
+          </button>
+        </div>
       </div>
     </div>
   );
